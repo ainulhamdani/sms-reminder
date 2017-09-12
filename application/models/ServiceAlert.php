@@ -249,7 +249,7 @@ class ServiceAlert extends CI_Model{
             }
         }
         
-        $query  = $analyticsDB->query("SELECT kartu_anc_visit.*,kartu_ibu_registration.dusun FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
+        $query  = $analyticsDB->query("SELECT kartu_anc_visit.*,kartu_ibu_registration.dusun,kartu_ibu_registration.namalengkap FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
         $query2 = $analyticsDB->query("SELECT motherId FROM kartu_pnc_dokumentasi_persalinan")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -274,6 +274,7 @@ class ServiceAlert extends CI_Model{
                     $result[$ibuhamil->motherId]["userid"] = $ibuhamil->userID;
                     $result[$ibuhamil->motherId]["anc_date"] = $ibuhamil->ancDate;
                     $result[$ibuhamil->motherId]["anc_ke"]  = $ibuhamil->ancKe;
+                    $result[$ibuhamil->motherId]["nama"]  = $ibuhamil->namalengkap;
                     $result[$ibuhamil->motherId]["dusun"]  = str_replace('.','',trim($ibuhamil->dusun));
                     $hpht = date_create(date("Y-m-d",  strtotime($ibuhamil->tanggalHPHT)));
                     $diff = date_diff($now,$hpht);
@@ -284,6 +285,7 @@ class ServiceAlert extends CI_Model{
                 $result[$ibuhamil->motherId]["userid"]  = $ibuhamil->userID;
                 $result[$ibuhamil->motherId]["anc_date"]  = $ibuhamil->ancDate;
                 $result[$ibuhamil->motherId]["anc_ke"]  = $ibuhamil->ancKe;
+                $result[$ibuhamil->motherId]["nama"]  = $ibuhamil->namalengkap;
                 $result[$ibuhamil->motherId]["dusun"]  = str_replace('.','',trim($ibuhamil->dusun));
                 $hpht = date_create(date("Y-m-d",  strtotime($ibuhamil->tanggalHPHT)));
                 $diff = date_diff($now,$hpht);
@@ -296,15 +298,15 @@ class ServiceAlert extends CI_Model{
                 if(array_key_exists($all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']], $final_result[$res['userid']])){
                     if($res["anc_ke"]==1){
                         if($res["ga"]>12&&$res["ga"]<=18){
-                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc2"],$id);
+                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc2"],$res['nama']);
                         }
                     }elseif($res["anc_ke"]==2){
                         if($res["ga"]>28&&$res["ga"]<=32){
-                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc3"],$id);
+                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc3"],$res['nama']);
                         }
                     }elseif($res["anc_ke"]==3){
                         if($res["ga"]>32&&$res["ga"]<=36){
-                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc4"],$id);
+                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc4"],$res['nama']);
                         }
                     }
                 }
@@ -320,13 +322,22 @@ class ServiceAlert extends CI_Model{
             
             foreach($final as $dusun=>$anc){
                 if(!(sizeof($anc['due']['anc2'])==0)){
-                    $pesan_due3 .= $dusun."=".(sizeof($anc['due']['anc2'])).", ";
+                    $pesan_due2 .= $dusun."=";
+                    foreach ($anc['due']['anc2'] as $nama) {
+                      $pesan_due2 .= $nama.", ";
+                    }
                 }
                 if(!(sizeof($anc['due']['anc3'])==0)){
-                    $pesan_due3 .= $dusun."=".(sizeof($anc['due']['anc3'])).", ";
+                    $pesan_due3 .= $dusun."=";
+                    foreach ($anc['due']['anc3'] as $nama) {
+                      $pesan_due3 .= $nama.", ";
+                    }
                 }
                 if(!(sizeof($anc['due']['anc4'])==0)){
-                    $pesan_due4 .= $dusun."=".(sizeof($anc['due']['anc4'])).", ";
+                    $pesan_due4 .= $dusun."=";
+                    foreach ($anc['due']['anc4'] as $nama) {
+                      $pesan_due4 .= $nama.", ";
+                    }
                 }
             }
             var_dump($penerima);
@@ -480,68 +491,68 @@ class ServiceAlert extends CI_Model{
             
             if($pesan_overdue2!=""&&$pesan_overdue2_2!=""){
                 var_dump($this->ANC2_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue2);
-                $status = $this->send_message($this->ANC2_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue2,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC2_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue2,$penerima);
+                //var_dump($status);
             }elseif($pesan_overdue2!=""){
                 var_dump($this->ANC2_MESSAGE_OVERDUE.$pesan_overdue2);
-                $status = $this->send_message($this->ANC2_MESSAGE_OVERDUE.$pesan_overdue2,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC2_MESSAGE_OVERDUE.$pesan_overdue2,$penerima);
+                //var_dump($status);
             }else{
                 //var_dump($this->ANC2_MESSAGE_OVERDUE."Tidak ada");
             }
             if($pesan_overdue2_2!=""){
                 var_dump($this->ANC2_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue2_2);
-                $status = $this->send_message($this->ANC2_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue2_2,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC2_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue2_2,$penerima);
+                //var_dump($status);
             }
             if($pesan_overdue2_3!=""){
                 var_dump($this->ANC2_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue2_3);
-                $status = $this->send_message($this->ANC2_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue2_3,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC2_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue2_3,$penerima);
+                //var_dump($status);
             }
             
             if($pesan_overdue3!=""&&$pesan_overdue3_2!=""){
                 var_dump($this->ANC3_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue3);
-                $status = $this->send_message($this->ANC3_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue3,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC3_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue3,$penerima);
+                //var_dump($status);
             }elseif($pesan_overdue3!=""){
                 var_dump($this->ANC3_MESSAGE_OVERDUE.$pesan_overdue3);
-                $status = $this->send_message($this->ANC3_MESSAGE_OVERDUE.$pesan_overdue3,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC3_MESSAGE_OVERDUE.$pesan_overdue3,$penerima);
+                //var_dump($status);
             }else{
                 //var_dump($this->ANC3_MESSAGE_OVERDUE."Tidak ada");
             }
             if($pesan_overdue3_2!=""){
                 var_dump($this->ANC3_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue3_2);
-                $status = $this->send_message($this->ANC3_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue3_2,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC3_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue3_2,$penerima);
+                //var_dump($status);
             }
             if($pesan_overdue3_3!=""){
                 var_dump($this->ANC3_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue3_3);
-                $status = $this->send_message($this->ANC3_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue3_3,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC3_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue3_3,$penerima);
+                //var_dump($status);
             }
             
             if($pesan_overdue4!=""&&$pesan_overdue4_2!=""){
                 var_dump($this->ANC4_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue4);
-                $status = $this->send_message($this->ANC4_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue4,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC4_MESSAGE_OVERDUE."(Bagian1) ".$pesan_overdue4,$penerima);
+                //var_dump($status);
             }elseif($pesan_overdue4!=""){
                 var_dump($this->ANC4_MESSAGE_OVERDUE.$pesan_overdue4);
-                $status = $this->send_message($this->ANC4_MESSAGE_OVERDUE.$pesan_overdue4,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC4_MESSAGE_OVERDUE.$pesan_overdue4,$penerima);
+                //var_dump($status);
             }else{
                 //var_dump($this->ANC4_MESSAGE_OVERDUE."Tidak ada");
             }
             if($pesan_overdue4_2!=""){
                 var_dump($this->ANC4_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue4_2);
-                $status = $this->send_message($this->ANC4_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue4_2,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC4_MESSAGE_OVERDUE."(Bagian2) ".$pesan_overdue4_2,$penerima);
+                //var_dump($status);
             }
             if($pesan_overdue4_3!=""){
                 var_dump($this->ANC4_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue4_3);
-                $status = $this->send_message($this->ANC4_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue4_3,$penerima);
-                var_dump($status);
+                //$status = $this->send_message($this->ANC4_MESSAGE_OVERDUE."(Bagian3) ".$pesan_overdue4_3,$penerima);
+                //var_dump($status);
             }
         }
     }

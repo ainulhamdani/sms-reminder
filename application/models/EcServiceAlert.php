@@ -216,15 +216,15 @@ class EcServiceAlert extends CI_Model{
                 if(array_key_exists($res['dusun'], $final_result[$res['locationid']])){
                     if($res["anc_ke"]==1){
                         if($res["ga"]>12&&$res["ga"]<=18){
-                            array_push($final_result[$res['locationid']][$res['dusun']]["due"]["anc2"],$id);
+                            array_push($final_result[$res['locationid']][$res['dusun']]["due"]["anc2"],$res['nama']);
                         }
                     }elseif($res["anc_ke"]==2){
                         if($res["ga"]>28&&$res["ga"]<=32){
-                            array_push($final_result[$res['locationid']][$res['dusun']]["due"]["anc3"],$id);
+                            array_push($final_result[$res['locationid']][$res['dusun']]["due"]["anc3"],$res['nama']);
                         }
                     }elseif($res["anc_ke"]==3){
                         if($res["ga"]>32&&$res["ga"]<=36){
-                            array_push($final_result[$res['locationid']][$res['dusun']]["due"]["anc4"],$id);
+                            array_push($final_result[$res['locationid']][$res['dusun']]["due"]["anc4"],$res['nama']);
                         }
                     }
                 }
@@ -240,13 +240,22 @@ class EcServiceAlert extends CI_Model{
             
             foreach($final as $dusun=>$anc){
                 if(!(sizeof($anc['due']['anc2'])==0)){
-                    $pesan_due3 .= $dusun."=".(sizeof($anc['due']['anc2'])).", ";
+                    $pesan_due2 .= $dusun."=";
+                    foreach ($anc['due']['anc2'] as $nama) {
+                      $pesan_due2 .= $nama.", ";
+                    }
                 }
                 if(!(sizeof($anc['due']['anc3'])==0)){
-                    $pesan_due3 .= $dusun."=".(sizeof($anc['due']['anc3'])).", ";
+                    $pesan_due3 .= $dusun."=";
+                    foreach ($anc['due']['anc3'] as $nama) {
+                      $pesan_due3 .= $nama.", ";
+                    }
                 }
                 if(!(sizeof($anc['due']['anc4'])==0)){
-                    $pesan_due4 .= $dusun."=".(sizeof($anc['due']['anc4'])).", ";
+                    $pesan_due4 .= $dusun."=";
+                    foreach ($anc['due']['anc4'] as $nama) {
+                      $pesan_due4 .= $nama.", ";
+                    }
                 }
             }
             
