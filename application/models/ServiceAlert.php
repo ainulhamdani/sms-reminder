@@ -249,7 +249,7 @@ class ServiceAlert extends CI_Model{
             }
         }
         
-        $query  = $analyticsDB->query("SELECT kartu_anc_visit.*,kartu_ibu_registration.dusun,kartu_ibu_registration.namalengkap FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
+        $query  = $analyticsDB->query("SELECT kartu_anc_visit.userID,kartu_anc_visit.motherId,kartu_anc_visit.ancDate,kartu_anc_visit.tanggalHPHT,kartu_anc_visit.ancKe,kartu_ibu_registration.dusun,kartu_ibu_registration.namalengkap FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
         $query2 = $analyticsDB->query("SELECT motherId FROM kartu_pnc_dokumentasi_persalinan")->result();
         $datapnc = [];
         foreach ($query2 as $q){
