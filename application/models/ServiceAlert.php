@@ -344,23 +344,23 @@ class ServiceAlert extends CI_Model{
             if(strlen($pesan_due2)==44){
                 //var_dump($pesan_due2."Tidak ada");
             }else{
-                var_dump($pesan_due2);
-//                $status = $this->send_message($pesan_due2,$penerima);
-//                var_dump($status);
+                //var_dump($pesan_due2);
+                $status = $this->send_message($pesan_due2,$penerima);
+                var_dump($status);
             }
             if(strlen($pesan_due3)==44){
                 //var_dump($pesan_due3."Tidak ada");
             }else{
-                var_dump($pesan_due3);
-//                $status = $this->send_message($pesan_due3,$penerima);
-//                var_dump($status);
+                //var_dump($pesan_due3);
+                $status = $this->send_message($pesan_due3,$penerima);
+                var_dump($status);
             }
             if(strlen($pesan_due4)==44){
                 //var_dump($pesan_due4."Tidak ada");
             }else{
-                var_dump($pesan_due4);
-//                $status = $this->send_message($pesan_due4,$penerima);
-//                var_dump($status);
+                //var_dump($pesan_due4);
+                $status = $this->send_message($pesan_due4,$penerima);
+                var_dump($status);
             }
         }
     }
