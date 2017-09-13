@@ -626,17 +626,17 @@ class EcServiceAlert extends CI_Model{
         }
         
         foreach ($result as $id=>$res){
-            if($res['ga']==8){
+            if($res['ga']==7){
                 if($res['lastkf']=='None'){
                     array_push($final_result[$res['locationid']]["due"]["kf1"],$res);
                 }
             }
-            if($res['ga']==29){
+            if($res['ga']==28){
                 if($res['lastkf']=='None'||$res['lastkf']!='kf1'){
                     array_push($final_result[$res['locationid']]["due"]["kf2"],$res);
                 }
             }
-            if($res['ga']==36){
+            if($res['ga']==35){
                 if($res['lastkf']=='None'||$res['lastkf']!='kf2'){
                     array_push($final_result[$res['locationid']]["due"]["kf3"],$res);
                 }
