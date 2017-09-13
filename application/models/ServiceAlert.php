@@ -570,107 +570,7 @@ class ServiceAlert extends CI_Model{
             $final_result[$user] = $data;
         }
         //var_dump($query->result());
-        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.*,kartu_ibu_registration.namalengkap FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
-        $query2 = $analyticsDB->query("SELECT motherId,hariKeKF FROM kartu_pnc_visit ORDER BY referenceDate DESC")->result();
-        $datapnc = [];
-        foreach ($query2 as $q){
-            if(!array_key_exists($q->motherId, $datapnc)){
-                $datapnc[$q->motherId] = $q->hariKeKF;
-            }
-            
-        }
-        $query2 = $analyticsDB->query("SELECT * FROM kohort_bayi_neonatal_period ORDER BY submissionDate DESC")->result();
-        $datachild = [];
-        foreach ($query2 as $q){
-            if(!array_key_exists($q->childId, $datachild)){
-                $datachild[$q->childId]["kunjunganNeonatal"] = $q->kunjunganNeonatal;
-                $datachild[$q->childId]["kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan"] = $q->kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan;
-            }
-            
-        }
-        foreach ($query->result() as $ibunifas){
-            $today = date_create($now);
-            $result[$ibunifas->motherId]["nama"] = $ibunifas->namalengkap;
-            $result[$ibunifas->motherId]["lastkf"] = 'None';
-            $result[$ibunifas->motherId]["lastkn"] = 'None';
-            $result[$ibunifas->motherId]["68"] = 'None';
-            $result[$ibunifas->motherId]["userid"]  = $ibunifas->userID;
-            $tgl_lahir = date_create(date("Y-m-d",  strtotime($ibunifas->tanggalLahirAnak)));
-            $diff = date_diff($today,$tgl_lahir);
-            $diff_day = $diff->days;
-            $result[$ibunifas->motherId]["ga"] = $diff_day;
-            
-            if(array_key_exists($ibunifas->motherId, $datapnc)){
-                $result[$ibunifas->motherId]["lastkf"]  = $datapnc[$ibunifas->motherId];
-            }
-            if(array_key_exists($ibunifas->childId, $datachild)){
-                $result[$ibunifas->motherId]["lastkn"]  = $datachild[$ibunifas->childId]['kunjunganNeonatal'];
-                if($datachild[$ibunifas->childId]['kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan']!='')$result[$ibunifas->motherId]["68"]  = $datachild[$ibunifas->childId]['kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan'];
-            }
-        }
-        
-        foreach ($result as $id=>$res){
-            if($res['ga']<3){
-                if($res['lastkf']=='None'){
-                    array_push($final_result[$res['userid']]["due"]["kf1"],$res);
-                }
-            }
-            if($res['ga']==4){
-                if($res['lastkf']=='None'||$res['lastkf']<=3){
-                    array_push($final_result[$res['userid']]["due"]["kf2"],$res);
-                }
-            }
-            if($res['ga']==9){
-                if($res['lastkf']=='None'||$res['lastkf']<=8){
-                    array_push($final_result[$res['userid']]["due"]["kf3"],$res);
-                }
-            }
-            if($res['ga']==36){
-                if($res['lastkf']=='None'||$res['lastkf']<36){
-                    array_push($final_result[$res['userid']]["due"]["kf4"],$res);
-                }
-            }
-        }
-        
-        foreach ($final_result as $desa=>$due){
-            var_dump($desa);
-            $penerima = [$this->bidans[$desa]['tel']];
-            $pesan['kf1'] = str_replace('xxx', '1', $this->PNC_MESSAGE_DUE);
-            $pesan['kf2'] = str_replace('xxx', '2', $this->PNC_MESSAGE_DUE);
-            $pesan['kf3'] = str_replace('xxx', '3', $this->PNC_MESSAGE_DUE);
-            $pesan['kf4'] = str_replace('xxx', '4', $this->PNC_MESSAGE_DUE);
-            
-            foreach ($due['due'] as $kf=>$dataibu){
-                if(!(sizeof($due['due'][$kf])==0)){
-                    foreach ($dataibu as $ibu){
-                        if($ibu==end($dataibu)){
-                            $pesan[$kf] .= $ibu['nama'];
-                        }else{
-                            $pesan[$kf] .= $ibu['nama'].", ";
-                        }
-                    }
-                    var_dump($pesan[$kf]);
-//                    $status = $this->send_message($pesan[$kf],$penerima);
-//                    var_dump($status);
-                }
-            }
-        }
-    }
-    
-    public function alertPncOverDue(){
-        $analyticsDB = $this->load->database('analytics', TRUE);
-        $now = date("Y-m-d");
-//        $now = '2017-04-13';
-        var_dump($now);
-        $batas = date("Y-m-d", strtotime($now." -42 days"));
-        $result = array();
-        $data = array("due"=>array("kf1"=>array(),"kf2"=>array(),"kf3"=>array(),"kf4"=>array()));
-        $final_result = array();
-        foreach ($this->bidans as $user=>$bidan){
-            $final_result[$user] = $data;
-        }
-        //var_dump($query->result());
-        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.*,kartu_ibu_registration.namalengkap FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
+        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.userID,kartu_pnc_dokumentasi_persalinan.motherId,kartu_pnc_dokumentasi_persalinan.childId,kartu_pnc_dokumentasi_persalinan.tanggalLahirAnak,kartu_ibu_registration.namalengkap FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
         $query2 = $analyticsDB->query("SELECT motherId,hariKeKF FROM kartu_pnc_visit ORDER BY referenceDate DESC")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -716,18 +616,108 @@ class ServiceAlert extends CI_Model{
                 }
             }
             if($res['ga']==8){
-                if($res['lastkf']=='None'||$res['lastkf']<=3){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf1'){
                     array_push($final_result[$res['userid']]["due"]["kf2"],$res);
                 }
             }
             if($res['ga']==29){
-                if($res['lastkf']=='None'||$res['lastkf']<=8){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf2'){
                     array_push($final_result[$res['userid']]["due"]["kf3"],$res);
                 }
             }
-            if($res['ga']==42){
-                if($res['lastkf']=='None'||$res['lastkf']<=29){
-                    array_push($final_result[$res['userid']]["due"]["kf4"],$res);
+        }
+        
+        foreach ($final_result as $desa=>$due){
+            var_dump($desa);
+            $penerima = [$this->bidans[$desa]['tel']];
+            $pesan['kf1'] = str_replace('xxx', '1', $this->PNC_MESSAGE_DUE);
+            $pesan['kf2'] = str_replace('xxx', '2', $this->PNC_MESSAGE_DUE);
+            $pesan['kf3'] = str_replace('xxx', '3', $this->PNC_MESSAGE_DUE);
+            $pesan['kf4'] = str_replace('xxx', '4', $this->PNC_MESSAGE_DUE);
+            
+            foreach ($due['due'] as $kf=>$dataibu){
+                if(!(sizeof($due['due'][$kf])==0)){
+                    foreach ($dataibu as $ibu){
+                        if($ibu==end($dataibu)){
+                            $pesan[$kf] .= $ibu['nama'];
+                        }else{
+                            $pesan[$kf] .= $ibu['nama'].", ";
+                        }
+                    }
+                    //var_dump($pesan[$kf]);
+                    $status = $this->send_message($pesan[$kf],$penerima);
+                    var_dump($status);
+                }
+            }
+        }
+    }
+    
+    public function alertPncOverDue(){
+        $analyticsDB = $this->load->database('analytics', TRUE);
+        $now = date("Y-m-d");
+//        $now = '2017-04-13';
+        var_dump($now);
+        $batas = date("Y-m-d", strtotime($now." -42 days"));
+        $result = array();
+        $data = array("due"=>array("kf1"=>array(),"kf2"=>array(),"kf3"=>array(),"kf4"=>array()));
+        $final_result = array();
+        foreach ($this->bidans as $user=>$bidan){
+            $final_result[$user] = $data;
+        }
+        //var_dump($query->result());
+        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.userID,kartu_pnc_dokumentasi_persalinan.motherId,kartu_pnc_dokumentasi_persalinan.childId,kartu_pnc_dokumentasi_persalinan.tanggalLahirAnak,kartu_ibu_registration.namalengkap FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
+        $query2 = $analyticsDB->query("SELECT motherId,hariKeKF FROM kartu_pnc_visit ORDER BY referenceDate DESC")->result();
+        $datapnc = [];
+        foreach ($query2 as $q){
+            if(!array_key_exists($q->motherId, $datapnc)){
+                $datapnc[$q->motherId] = $q->hariKeKF;
+            }
+            
+        }
+        $query2 = $analyticsDB->query("SELECT * FROM kohort_bayi_neonatal_period ORDER BY submissionDate DESC")->result();
+        $datachild = [];
+        foreach ($query2 as $q){
+            if(!array_key_exists($q->childId, $datachild)){
+                $datachild[$q->childId]["kunjunganNeonatal"] = $q->kunjunganNeonatal;
+                $datachild[$q->childId]["kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan"] = $q->kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan;
+            }
+            
+        }
+        foreach ($query->result() as $ibunifas){
+            $today = date_create($now);
+            $result[$ibunifas->motherId]["nama"] = $ibunifas->namalengkap;
+            $result[$ibunifas->motherId]["lastkf"] = 'None';
+            $result[$ibunifas->motherId]["lastkn"] = 'None';
+            $result[$ibunifas->motherId]["68"] = 'None';
+            $result[$ibunifas->motherId]["userid"]  = $ibunifas->userID;
+            $tgl_lahir = date_create(date("Y-m-d",  strtotime($ibunifas->tanggalLahirAnak)));
+            $diff = date_diff($today,$tgl_lahir);
+            $diff_day = $diff->days;
+            $result[$ibunifas->motherId]["ga"] = $diff_day;
+            
+            if(array_key_exists($ibunifas->motherId, $datapnc)){
+                $result[$ibunifas->motherId]["lastkf"]  = $datapnc[$ibunifas->motherId];
+            }
+            if(array_key_exists($ibunifas->childId, $datachild)){
+                $result[$ibunifas->motherId]["lastkn"]  = $datachild[$ibunifas->childId]['kunjunganNeonatal'];
+                if($datachild[$ibunifas->childId]['kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan']!='')$result[$ibunifas->motherId]["68"]  = $datachild[$ibunifas->childId]['kunjunganNeonatalpertama6sd48jamTanggaldanBulanKunjungan'];
+            }
+        }
+        
+        foreach ($result as $id=>$res){
+            if($res['ga']==8){
+                if($res['lastkf']=='None'){
+                    array_push($final_result[$res['userid']]["due"]["kf1"],$res);
+                }
+            }
+            if($res['ga']==29){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf1'){
+                    array_push($final_result[$res['userid']]["due"]["kf2"],$res);
+                }
+            }
+            if($res['ga']==36){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf2'){
+                    array_push($final_result[$res['userid']]["due"]["kf3"],$res);
                 }
             }
         }
@@ -749,9 +739,9 @@ class ServiceAlert extends CI_Model{
                             $pesan[$kf] .= $ibu['nama'].", ";
                         }
                     }
-                    var_dump($pesan[$kf]);
-//                    $status = $this->send_message($pesan[$kf],$penerima);
-//                    var_dump($status);
+                    //var_dump($pesan[$kf]);
+                    $status = $this->send_message($pesan[$kf],$penerima);
+                    var_dump($status);
                 }
             }
         }

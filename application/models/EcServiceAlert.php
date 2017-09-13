@@ -491,107 +491,7 @@ class EcServiceAlert extends CI_Model{
             $final_result[$user] = $data;
         }
         //var_dump($query->result());
-        $query  = $analyticsDB->query("SELECT event_bidan_dokumentasi_persalinan.*, client_ibu.namaLengkap, client_anak.birthDate FROM event_bidan_dokumentasi_persalinan LEFT JOIN client_anak ON client_anak.ibuCaseId = event_bidan_dokumentasi_persalinan.baseEntityId LEFT JOIN client_ibu ON event_bidan_dokumentasi_persalinan.baseEntityId=client_ibu.baseEntityId WHERE client_anak.birthDate > '$batas' AND keadaanBayi='hidup' AND locationId!='' GROUP BY event_bidan_dokumentasi_persalinan.baseEntityId");
-        $query2 = $analyticsDB->query("SELECT baseEntityId,hariKeKF FROM event_bidan_kunjungan_pnc ORDER BY PNCDate DESC")->result();
-        $datapnc = [];
-        foreach ($query2 as $q){
-            if(!array_key_exists($q->baseEntityId, $datapnc)){
-                $datapnc[$q->baseEntityId] = $q->hariKeKF;
-            }
-            
-        }
-        $query2 = $analyticsDB->query("SELECT * FROM event_bidan_kunjungan_neonatal ORDER BY tanggalKunjunganBayiPerbulan  DESC")->result();
-        $datachild = [];
-        foreach ($query2 as $q){
-            if(!array_key_exists($q->baseEntityId, $datachild)){
-                $datachild[$q->baseEntityId]["kunjunganNeonatal"] = $q->kunjunganNeonatal;
-                $datachild[$q->baseEntityId]["hb0"] = $q->hb0;
-            }
-            
-        }
-        foreach ($query->result() as $ibunifas){
-            $today = date_create($now);
-            $result[$ibunifas->baseEntityId]["nama"] = $ibunifas->namaLengkap;
-            $result[$ibunifas->baseEntityId]["lastkf"] = 'None';
-            $result[$ibunifas->baseEntityId]["lastkn"] = 'None';
-            $result[$ibunifas->baseEntityId]["68"] = 'None';
-            $result[$ibunifas->baseEntityId]["locationid"]  = str_replace('.', '', $ibunifas->locationId);
-            $tgl_lahir = date_create(date("Y-m-d",  strtotime($ibunifas->birthDate)));
-            $diff = date_diff($today,$tgl_lahir);
-            $diff_day = $diff->days;
-            $result[$ibunifas->baseEntityId]["ga"] = $diff_day;
-            
-            if(array_key_exists($ibunifas->baseEntityId, $datapnc)){
-                $result[$ibunifas->baseEntityId]["lastkf"]  = (int)$datapnc[$ibunifas->baseEntityId];
-            }
-            if(array_key_exists($ibunifas->baseEntityId, $datachild)){
-                $result[$ibunifas->baseEntityId]["lastkn"]  = $datachild[$ibunifas->baseEntityId]['kunjunganNeonatal'];
-                if($datachild[$ibunifas->baseEntityId]['hb0']!='')$result[$ibunifas->baseEntityId]["68"]  = $datachild[$ibunifas->baseEntityId]['hb0'];
-            }
-        }
-        
-        foreach ($result as $id=>$res){
-            if($res['ga']<3){
-                if($res['lastkf']=='None'){
-                    array_push($final_result[$res['locationid']]["due"]["kf1"],$res);
-                }
-            }
-            if($res['ga']==4){
-                if($res['lastkf']=='None'||$res['lastkf']<=3){
-                    array_push($final_result[$res['locationid']]["due"]["kf2"],$res);
-                }
-            }
-            if($res['ga']==9){
-                if($res['lastkf']=='None'||$res['lastkf']<=8){
-                    array_push($final_result[$res['locationid']]["due"]["kf3"],$res);
-                }
-            }
-            if($res['ga']==36){
-                if($res['lastkf']=='None'||$res['lastkf']<36){
-                    array_push($final_result[$res['locationid']]["due"]["kf4"],$res);
-                }
-            }
-        }
-//        var_dump($result);
-        foreach ($final_result as $desa=>$due){
-            var_dump($desa);
-            $penerima = [$this->bidans[$desa]['tel']];
-            $pesan['kf1'] = str_replace('xxx', '1', $this->PNC_MESSAGE_DUE);
-            $pesan['kf2'] = str_replace('xxx', '2', $this->PNC_MESSAGE_DUE);
-            $pesan['kf3'] = str_replace('xxx', '3', $this->PNC_MESSAGE_DUE);
-            $pesan['kf4'] = str_replace('xxx', '4', $this->PNC_MESSAGE_DUE);
-            
-            foreach ($due['due'] as $kf=>$dataibu){
-                if(!(sizeof($due['due'][$kf])==0)){
-                    foreach ($dataibu as $ibu){
-                        if($ibu==end($dataibu)){
-                            $pesan[$kf] .= $ibu['nama'];
-                        }else{
-                            $pesan[$kf] .= $ibu['nama'].", ";
-                        }
-                    }
-                    var_dump($pesan[$kf]);
-//                    $status = $this->send_message($pesan[$kf],$penerima);
-//                    var_dump($status);
-                }
-            }
-        }
-    }
-    
-    public function alertPncOverDue(){
-        $analyticsDB = $this->load->database('ec_analytics', TRUE);
-        $now = date("Y-m-d");
-//        $now = '2017-04-13';
-        var_dump($now);
-        $batas = date("Y-m-d", strtotime($now." -42 days"));
-        $result = array();
-        $data = array("due"=>array("kf1"=>array(),"kf2"=>array(),"kf3"=>array(),"kf4"=>array()));
-        $final_result = array();
-        foreach ($this->bidans as $user=>$bidan){
-            $final_result[$user] = $data;
-        }
-        //var_dump($query->result());
-        $query  = $analyticsDB->query("SELECT event_bidan_dokumentasi_persalinan.*, client_ibu.namaLengkap, client_anak.birthDate FROM event_bidan_dokumentasi_persalinan LEFT JOIN client_anak ON client_anak.ibuCaseId = event_bidan_dokumentasi_persalinan.baseEntityId LEFT JOIN client_ibu ON event_bidan_dokumentasi_persalinan.baseEntityId=client_ibu.baseEntityId WHERE client_anak.birthDate > '$batas' AND keadaanBayi='hidup' AND locationId!='' GROUP BY event_bidan_dokumentasi_persalinan.baseEntityId");
+        $query  = $analyticsDB->query("SELECT event_bidan_dokumentasi_persalinan.baseEntityId,event_bidan_dokumentasi_persalinan.locationId, client_ibu.namaLengkap, client_anak.birthDate FROM event_bidan_dokumentasi_persalinan LEFT JOIN client_anak ON client_anak.ibuCaseId = event_bidan_dokumentasi_persalinan.baseEntityId LEFT JOIN client_ibu ON event_bidan_dokumentasi_persalinan.baseEntityId=client_ibu.baseEntityId WHERE client_anak.birthDate > '$batas' AND keadaanBayi='hidup' AND locationId!='' GROUP BY event_bidan_dokumentasi_persalinan.baseEntityId");
         $query2 = $analyticsDB->query("SELECT baseEntityId,hariKeKF FROM event_bidan_kunjungan_pnc ORDER BY PNCDate DESC")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -637,18 +537,108 @@ class EcServiceAlert extends CI_Model{
                 }
             }
             if($res['ga']==8){
-                if($res['lastkf']=='None'||$res['lastkf']<=3){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf1'){
                     array_push($final_result[$res['locationid']]["due"]["kf2"],$res);
                 }
             }
             if($res['ga']==29){
-                if($res['lastkf']=='None'||$res['lastkf']<=8){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf2'){
                     array_push($final_result[$res['locationid']]["due"]["kf3"],$res);
                 }
             }
-            if($res['ga']==42){
-                if($res['lastkf']=='None'||$res['lastkf']<=29){
-                    array_push($final_result[$res['locationid']]["due"]["kf4"],$res);
+        }
+//        var_dump($result);
+        foreach ($final_result as $desa=>$due){
+            var_dump($desa);
+            $penerima = [$this->bidans[$desa]['tel']];
+            $pesan['kf1'] = str_replace('xxx', '1', $this->PNC_MESSAGE_DUE);
+            $pesan['kf2'] = str_replace('xxx', '2', $this->PNC_MESSAGE_DUE);
+            $pesan['kf3'] = str_replace('xxx', '3', $this->PNC_MESSAGE_DUE);
+            $pesan['kf4'] = str_replace('xxx', '4', $this->PNC_MESSAGE_DUE);
+            
+            foreach ($due['due'] as $kf=>$dataibu){
+                if(!(sizeof($due['due'][$kf])==0)){
+                    foreach ($dataibu as $ibu){
+                        if($ibu==end($dataibu)){
+                            $pesan[$kf] .= $ibu['nama'];
+                        }else{
+                            $pesan[$kf] .= $ibu['nama'].", ";
+                        }
+                    }
+                    //var_dump($pesan[$kf]);
+                    $status = $this->send_message($pesan[$kf],$penerima);
+                    var_dump($status);
+                }
+            }
+        }
+    }
+    
+    public function alertPncOverDue(){
+        $analyticsDB = $this->load->database('ec_analytics', TRUE);
+        $now = date("Y-m-d");
+//        $now = '2017-04-13';
+        var_dump($now);
+        $batas = date("Y-m-d", strtotime($now." -42 days"));
+        $result = array();
+        $data = array("due"=>array("kf1"=>array(),"kf2"=>array(),"kf3"=>array(),"kf4"=>array()));
+        $final_result = array();
+        foreach ($this->bidans as $user=>$bidan){
+            $final_result[$user] = $data;
+        }
+        //var_dump($query->result());
+        $query  = $analyticsDB->query("SELECT event_bidan_dokumentasi_persalinan.baseEntityId,event_bidan_dokumentasi_persalinan.locationId, client_ibu.namaLengkap, client_anak.birthDate FROM event_bidan_dokumentasi_persalinan LEFT JOIN client_anak ON client_anak.ibuCaseId = event_bidan_dokumentasi_persalinan.baseEntityId LEFT JOIN client_ibu ON event_bidan_dokumentasi_persalinan.baseEntityId=client_ibu.baseEntityId WHERE client_anak.birthDate > '$batas' AND keadaanBayi='hidup' AND locationId!='' GROUP BY event_bidan_dokumentasi_persalinan.baseEntityId");
+        $query2 = $analyticsDB->query("SELECT baseEntityId,hariKeKF FROM event_bidan_kunjungan_pnc ORDER BY PNCDate DESC")->result();
+        $datapnc = [];
+        foreach ($query2 as $q){
+            if(!array_key_exists($q->baseEntityId, $datapnc)){
+                $datapnc[$q->baseEntityId] = $q->hariKeKF;
+            }
+            
+        }
+        $query2 = $analyticsDB->query("SELECT * FROM event_bidan_kunjungan_neonatal ORDER BY tanggalKunjunganBayiPerbulan  DESC")->result();
+        $datachild = [];
+        foreach ($query2 as $q){
+            if(!array_key_exists($q->baseEntityId, $datachild)){
+                $datachild[$q->baseEntityId]["kunjunganNeonatal"] = $q->kunjunganNeonatal;
+                $datachild[$q->baseEntityId]["hb0"] = $q->hb0;
+            }
+            
+        }
+        foreach ($query->result() as $ibunifas){
+            $today = date_create($now);
+            $result[$ibunifas->baseEntityId]["nama"] = $ibunifas->namaLengkap;
+            $result[$ibunifas->baseEntityId]["lastkf"] = 'None';
+            $result[$ibunifas->baseEntityId]["lastkn"] = 'None';
+            $result[$ibunifas->baseEntityId]["68"] = 'None';
+            $result[$ibunifas->baseEntityId]["locationid"]  = str_replace('.', '', $ibunifas->locationId);
+            $tgl_lahir = date_create(date("Y-m-d",  strtotime($ibunifas->birthDate)));
+            $diff = date_diff($today,$tgl_lahir);
+            $diff_day = $diff->days;
+            $result[$ibunifas->baseEntityId]["ga"] = $diff_day;
+            
+            if(array_key_exists($ibunifas->baseEntityId, $datapnc)){
+                $result[$ibunifas->baseEntityId]["lastkf"]  = (int)$datapnc[$ibunifas->baseEntityId];
+            }
+            if(array_key_exists($ibunifas->baseEntityId, $datachild)){
+                $result[$ibunifas->baseEntityId]["lastkn"]  = $datachild[$ibunifas->baseEntityId]['kunjunganNeonatal'];
+                if($datachild[$ibunifas->baseEntityId]['hb0']!='')$result[$ibunifas->baseEntityId]["68"]  = $datachild[$ibunifas->baseEntityId]['hb0'];
+            }
+        }
+        
+        foreach ($result as $id=>$res){
+            if($res['ga']==8){
+                if($res['lastkf']=='None'){
+                    array_push($final_result[$res['locationid']]["due"]["kf1"],$res);
+                }
+            }
+            if($res['ga']==29){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf1'){
+                    array_push($final_result[$res['locationid']]["due"]["kf2"],$res);
+                }
+            }
+            if($res['ga']==36){
+                if($res['lastkf']=='None'||$res['lastkf']!='kf2'){
+                    array_push($final_result[$res['locationid']]["due"]["kf3"],$res);
                 }
             }
         }
@@ -670,9 +660,9 @@ class EcServiceAlert extends CI_Model{
                             $pesan[$kf] .= $ibu['nama'].", ";
                         }
                     }
-                    var_dump($pesan[$kf]);
-//                    $status = $this->send_message($pesan[$kf],$penerima);
-//                    var_dump($status);
+                    //var_dump($pesan[$kf]);
+                    $status = $this->send_message($pesan[$kf],$penerima);
+                    var_dump($status);
                 }
             }
         }
