@@ -18,9 +18,9 @@ class Rapidpro extends CI_Model{
     
     public function getContacts($group='',$page=''){
         $headers = [
-            'Authorization: Token 23ebc2f3f9583f91b00bde6323e2d6d0e6d1d9d0'
+            'Authorization: Token '.$this->config->item('rapidpro_token')
         ];
-        $url = 'http://rapidpro.ona.io/api/v1/contacts.json';
+        $url = $this->config->item('rapidpro_url').'/api/v2/contacts.json';
         if($group!='') $url = $url.'?group='.$group;
         if($page!='') $url = $url.'&page='.$page;
         $ch = curl_init($url);
@@ -57,10 +57,10 @@ class Rapidpro extends CI_Model{
         }
         $post = json_encode($data);
         $headers = [
-            'Authorization: Token 23ebc2f3f9583f91b00bde6323e2d6d0e6d1d9d0',
+            'Authorization: Token '.$this->config->item('rapidpro_token'),
             'Content-Type: application/json'
         ];
-        $ch = curl_init('http://rapidpro.ona.io/api/v1/contacts.json');
+        $ch = curl_init($this->config->item('rapidpro_url').'/api/v2/contacts.json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST , 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
@@ -105,9 +105,9 @@ class Rapidpro extends CI_Model{
     
     public function getBroadcasts(){
         $headers = [
-            'Authorization: Token 23ebc2f3f9583f91b00bde6323e2d6d0e6d1d9d0'
+            'Authorization: Token '.$this->config->item('rapidpro_token')
         ];
-        $ch = curl_init('http://rapidpro.ona.io/api/v1/broadcasts.json');
+        $ch = curl_init($this->config->item('rapidpro_url').'/api/v2/broadcasts.json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
@@ -125,10 +125,10 @@ class Rapidpro extends CI_Model{
         }
         $post = json_encode($data);
         $headers = [
-            'Authorization: Token 23ebc2f3f9583f91b00bde6323e2d6d0e6d1d9d0',
+            'Authorization: Token '.$this->config->item('rapidpro_token'),
             'Content-Type: application/json'
         ];
-        $ch = curl_init('http://rapidpro.ona.io/api/v1/broadcasts.json');
+        $ch = curl_init($this->config->item('rapidpro_url').'/api/v2/broadcasts.json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST , 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
@@ -167,10 +167,10 @@ class Rapidpro extends CI_Model{
         $post = json_encode($data);
         
         $headers = [
-            'Authorization: Token 23ebc2f3f9583f91b00bde6323e2d6d0e6d1d9d0',
+            'Authorization: Token '.$this->config->item('rapidpro_token'),
             'Content-Type: application/json'
         ];
-        $ch = curl_init('http://rapidpro.ona.io/api/v2/flow_starts.json');
+        $ch = curl_init($this->config->item('rapidpro_url').'/api/v2/flow_starts.json');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST , 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
