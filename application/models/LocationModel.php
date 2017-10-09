@@ -26,9 +26,9 @@ class LocationModel extends CI_Model{
         ];
     
     private $int_loc_id = [
-            "bidan"=>array('user1'=>'Lekor','user2'=>'Saba','user3'=>'Pendem','user4'=>'Setuta','user5'=>'Jango','user6'=>'Janapria','user8'=>'Ketara','user9'=>'Sengkol','user10'=>'Sengkol','user11'=>'Kawo','user12'=>'Tanak Awu','user13'=>'Pengembur','user14'=>'Segala Anyar'),
-            "gizi"=>array('Saba'=>'Saba','Tanak Awu'=>'Tanak Awu'),
-            "vaksinator"=>array('Saba'=>'Saba','Tanak Awu'=>'Tanak Awu')
+            "bidan"=>array('user1'=>'Lekor','user2'=>'Saba','user3'=>'Pendem','user4'=>'Setuta','user5'=>'Jango','user6'=>'Janapria','user8'=>'Ketara','user9'=>'Sengkol','user11'=>'Kawo','user12'=>'Tanak Awu','user13'=>'Pengembur','user14'=>'Segala Anyar'),
+            "gizi"=>array('gizi2'=>'Saba','gizi12'=>'Tanak Awu'),
+            "vaksinator"=>array('vaksinator2'=>'Saba','vaksinator12'=>'Tanak Awu')
         ];
     
     private $dusun = [

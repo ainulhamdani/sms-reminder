@@ -8,6 +8,7 @@ class Main extends CI_Controller {
             $this->load->model('Rapidpro');
             $this->load->model('HealthPromotion');
             $this->load->model('ServiceAlert','ServiceAlert');
+            $this->load->model('SubmissionReminder','SubmissionReminder');
         }
 	public function index(){
             $this->load->view('welcome_message');
@@ -107,5 +108,29 @@ class Main extends CI_Controller {
             $pesan = 'Hi @contact.name';
             $penerima = ['+6281916029525'];
             $this->Rapidpro->postBroadcasts($pesan,$penerima);
+        }
+
+        public function ec_bidan(){
+            $this->SubmissionReminder->ec_reminder("bidan","ec");
+        }
+
+        public function ec_vaksin(){
+            $this->SubmissionReminder->ec_reminder("vaksinator","ec");
+        }
+
+        public function ec_gizi(){
+            $this->SubmissionReminder->ec_reminder("gizi","ec");
+        }
+
+        public function cr_bidan(){
+            $this->SubmissionReminder->cr_reminder("bidan","cr");
+        }
+
+        public function cr_vaksin(){
+            $this->SubmissionReminder->cr_reminder("vaksinator","cr");
+        }
+
+        public function cr_gizi(){
+            $this->SubmissionReminder->cr_reminder("gizi","cr");
         }
 }
