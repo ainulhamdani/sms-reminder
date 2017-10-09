@@ -110,27 +110,39 @@ class Main extends CI_Controller {
             $this->Rapidpro->postBroadcasts($pesan,$penerima);
         }
 
-        public function ec_bidan(){
+        public function ec_submission(){
+            $this->ec_bidan();
+            $this->ec_vaksin();
+            $this->ec_gizi();
+        }
+
+        public function cr_submission(){
+            $this->cr_bidan();
+            $this->cr_vaksin();
+            $this->cr_gizi();
+        }
+
+        private function ec_bidan(){
             $this->SubmissionReminder->ec_reminder("bidan","ec");
         }
 
-        public function ec_vaksin(){
+        private function ec_vaksin(){
             $this->SubmissionReminder->ec_reminder("vaksinator","ec");
         }
 
-        public function ec_gizi(){
+        private function ec_gizi(){
             $this->SubmissionReminder->ec_reminder("gizi","ec");
         }
 
-        public function cr_bidan(){
+        private function cr_bidan(){
             $this->SubmissionReminder->cr_reminder("bidan","cr");
         }
 
-        public function cr_vaksin(){
+        private function cr_vaksin(){
             $this->SubmissionReminder->cr_reminder("vaksinator","cr");
         }
 
-        public function cr_gizi(){
+        private function cr_gizi(){
             $this->SubmissionReminder->cr_reminder("gizi","cr");
         }
 }
