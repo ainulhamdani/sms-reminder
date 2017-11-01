@@ -34,7 +34,7 @@ class SubmissionReminder extends CI_Model{
     		if($count == 0){
     			$pesan = "Selamat sore bapak/ibu. SMS ini merupakan SMS dari sistem. SMS ini sebagai pengingat bapak/ibu untuk mengentry data  dari pelayanan hari ini. Bila bapak/ibu sudah melakukan pengentryan, mohon mensinkronkan aplikasi. Terimakasih.";
     			$penerima = $this->fhw_number[$cd.'_'.$fhw][$name]['tel'];
-                $status = $this->send_message($pesan,$penerima);
+                $status = $this->send_message($pesan,[$penerima]);
                 var_dump($status);
     		}
     	}
@@ -52,7 +52,7 @@ class SubmissionReminder extends CI_Model{
     		if($count == 0){
     			$pesan = "Selamat sore bapak/ibu. SMS ini merupakan SMS dari sistem. SMS ini sebagai pengingat bapak/ibu untuk mengentry data  dari pelayanan hari ini. Bila bapak/ibu sudah melakukan pengentryan, mohon mensinkronkan aplikasi. Terimakasih.";
     			$penerima = $this->fhw_number[$cd.'_'.$fhw][$locId]['tel'];
-                $status = $this->send_message($pesan,$penerima);
+                $status = $this->send_message($pesan,[$penerima]);
                 var_dump($status);
     		}
     	}
