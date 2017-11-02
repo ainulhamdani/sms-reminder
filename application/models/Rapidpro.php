@@ -95,8 +95,19 @@ class Rapidpro extends CI_Model{
         
     }
     
-    public function getMessages(){
-        
+    public function getMessages($folder="incoming"){
+        $headers = [
+            'Authorization: Token '.$this->config->item('rapidpro_token')
+        ];
+        $ch = curl_init($this->config->item('rapidpro_url').'/api/v2/messages.json?folder='.$folder);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        if(!$response){
+            die('Error: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
+        }
+        curl_close($ch);
+        return $response;
     }
     
     public function postMessageAction(){

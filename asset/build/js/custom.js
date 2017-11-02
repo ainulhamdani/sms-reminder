@@ -1035,6 +1035,19 @@ if (typeof NProgress != 'undefined') {
 				}
 				
 		    };
+
+		    function init_NumbersInput() {
+				  
+				if(typeof $.fn.tagsInput !== 'undefined'){	
+				 
+				$('#numbers').tagsInput({
+				  width: 'auto',
+				  defaultText:'no hp',
+				});
+				
+				}
+				
+		    };
 	   
 		/* SELECT2 */
 	  
@@ -5272,7 +5285,7 @@ if (typeof NProgress != 'undefined') {
 		init_knob();
 		init_IonRangeSlider();
 		init_ColorPicker();
-		init_TagsInput();
+		init_NumbersInput();
 		init_parsley();
 		init_daterangepicker();
 		init_daterangepicker_right();
