@@ -110,39 +110,39 @@ class Main extends CI_Controller {
             $this->Rapidpro->postBroadcasts($pesan,$penerima);
         }
 
-        public function ec_submission(){
-            $this->ec_bidan();
-            $this->ec_vaksin();
-            $this->ec_gizi();
+        public function ec_submission($type="reminder"){
+            $this->ec_bidan($type);
+            $this->ec_vaksin($type);
+            $this->ec_gizi($type);
         }
 
-        public function cr_submission(){
-            $this->cr_bidan();
-            $this->cr_vaksin();
-            $this->cr_gizi();
+        public function cr_submission($type="reminder"){
+            $this->cr_bidan($type);
+            $this->cr_vaksin($type);
+            $this->cr_gizi($type);
         }
 
-        private function ec_bidan(){
-            $this->SubmissionReminder->ec_reminder("bidan","ec");
+        private function ec_bidan($type){
+            $this->SubmissionReminder->ec_reminder("bidan","ec",$type);
         }
 
-        private function ec_vaksin(){
-            $this->SubmissionReminder->ec_reminder("vaksinator","ec");
+        private function ec_vaksin($type){
+            $this->SubmissionReminder->ec_reminder("vaksinator","ec",$type);
         }
 
-        private function ec_gizi(){
-            $this->SubmissionReminder->ec_reminder("gizi","ec");
+        private function ec_gizi($type){
+            $this->SubmissionReminder->ec_reminder("gizi","ec",$type);
         }
 
-        private function cr_bidan(){
-            $this->SubmissionReminder->cr_reminder("bidan","cr");
+        private function cr_bidan($type){
+            $this->SubmissionReminder->cr_reminder("bidan","cr",$type);
         }
 
-        private function cr_vaksin(){
-            $this->SubmissionReminder->cr_reminder("vaksinator","cr");
+        private function cr_vaksin($type){
+            $this->SubmissionReminder->cr_reminder("vaksinator","cr",$type);
         }
 
-        private function cr_gizi(){
-            $this->SubmissionReminder->cr_reminder("gizi","cr");
+        private function cr_gizi($type){
+            $this->SubmissionReminder->cr_reminder("gizi","cr",$type);
         }
 }
