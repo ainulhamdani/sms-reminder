@@ -27,8 +27,11 @@ class SubmissionReminder extends CI_Model{
         $this->load->model('LocationEcModel');
         $loc = $this->LocationEcModel->getIntLocId($fhw);
     	$today = date("Y-m-d");
+        $yesterday = date("Y-m-d", strtotime($today." -1 day"));
     	$this->load->model('AnalyticsEcModel');
     	$data = $this->AnalyticsEcModel->getSubmissionCount($fhw,$today);
+        $this->load->model('EcOnTimeSubmissionModel');
+        $ontime = $this->EcOnTimeSubmissionModel->getOnTimeFormByDate([$yesterday,$yesterday],$fhw);
     	foreach ($loc as $locId => $name) {
     		$count = $data[$locId];
     		if($count == 0){
@@ -40,7 +43,8 @@ class SubmissionReminder extends CI_Model{
                 }
     		}else{
                 if($type=="thank"){
-                    $pesan = "Selamat pagi bapak/ibu. Terima kasih telah mengentry data Anda.";
+                    $pesan = "Selamat pagi bapak/ibu. Terima kasih telah mengentry data Anda. Berikut adalah rekap dari hasil data entry entry Anda kemarin: on-time submission xxx %";
+                    $pesan = str_replace('xxx', $ontime['daily'][$name], $pesan);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$name]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
                     var_dump($status);
@@ -54,8 +58,11 @@ class SubmissionReminder extends CI_Model{
         $this->load->model('LocationModel');
         $loc = $this->LocationModel->getIntLocId($fhw);
     	$today = date("Y-m-d");
+        $yesterday = date("Y-m-d", strtotime($today." -1 day"));
     	$this->load->model('AnalyticsModel');
     	$data = $this->AnalyticsModel->getSubmissionCount($fhw,$today);
+        $this->load->model('OnTimeSubmissionModel');
+        $ontime = $this->OnTimeSubmissionModel->getOnTimeFormByDate([$yesterday,$yesterday],$fhw);
     	foreach ($loc as $locId => $name) {
     		$count = $data[$locId];
     		if($count == 0){
@@ -67,7 +74,8 @@ class SubmissionReminder extends CI_Model{
                 }
     		}else{
                 if($type=="thank"){
-                    $pesan = "Selamat pagi bapak/ibu. Terima kasih telah mengentry data Anda.";
+                    $pesan = "Selamat pagi bapak/ibu. Terima kasih telah mengentry data Anda. Berikut adalah rekap dari hasil data entry entry Anda kemarin: on-time submission xxx %";
+                    $pesan = str_replace('xxx', $ontime['daily'][$name], $pesan);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$locId]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
                     var_dump($status);

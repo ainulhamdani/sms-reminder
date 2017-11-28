@@ -80,8 +80,8 @@ class LocationModel extends CI_Model{
     public function getLocIdQuery($locId){
         $location = '';
         foreach ($locId as $loc=>$id){
-            $location .= "locationId LIKE '%$loc%'";
-            if($loc!=  end($locId)) $location .= " OR ";
+            $location .= "userID LIKE '%$loc%'";
+            if($id!=  end($locId)) $location .= " OR ";
         }
         return $location;
     }
