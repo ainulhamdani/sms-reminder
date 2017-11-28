@@ -632,12 +632,12 @@ class EcServiceAlert extends CI_Model{
                 }
             }
             if($res['ga']==28){
-                if($res['lastkf']=='None'||$res['lastkf']!='kf1'){
+                if($res['lastkf']=='None'||$res['lastkf']!=2){
                     array_push($final_result[$res['locationid']]["due"]["kf2"],$res);
                 }
             }
             if($res['ga']==35){
-                if($res['lastkf']=='None'||$res['lastkf']!='kf2'){
+                if($res['lastkf']=='None'||$res['lastkf']!=3){
                     array_push($final_result[$res['locationid']]["due"]["kf3"],$res);
                 }
             }
