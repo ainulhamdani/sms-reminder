@@ -4,14 +4,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class ServiceAlert extends CI_Model{
     
-    private $ANC_MESSAGE_DUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah Ibu Hamil Anda yang jadwal kunjungan ANCnya akan tiba: ANC 2 = xx2 ibu , ANC 3 = xx3 ibu , ANC 4 = xx4 ibu. Silahkan periksa register Anda dan prioritaskan klien-klien tersebut.";
-    private $ANC_MESSAGE_NOW = "Selamat pagi, Bu xxnama. Sekedar mengingatkan, Ibu-ibu Hamil berikut ini sudah saatnya melakukan pemeriksaan ANC: ANC 2 = xx2 ibu, ANC 3 = xx3 ibu , ANC 4 = xx4 ibu. Anda harus memprioritaskan klien tersebut.";
-    private $ANC_MESSAGE_OVERDUE = "Selamat pagi, Bu xxnama. Berikut ini adalah jumlah ibu hamil anda yang jadwal ANCnya telah lewat waktu: ANC 2 = xx2 ibu , ANC 3 = xx3 ibu, ANC 4 = xx4 ibu. Mohon prioritaskan klien-klien ini sekarang.";
-    private $TT_HB_MESSAGE_DUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah ibu hamil yang jadwal tes Hb, imunisasi TT dan Fe-nya sudah tiba minggu ini: TT 1 = xtt1 ibu, TT 2 = xtt2 ibu, Tes Hb 1 = xhb1 ibu, Tes Hb Follow-up = xhbf ibu, Tes Hb 2 = xhb2 ibu, Fe 1 = xfe1 ibu, Fe 2 = xfe2 ibu, dan Fe 3 = xfe3 ibu.";
-    private $TT_HB_MESSAGE_OVERDUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah ibu hamil yang jadwal tes Hb, imunisasi TT dan Fe-nya telah lewat waktu tapi masih bisa menerima pelayanan: TT 1 = xtt1 ibu, TT 2 = xtt2 ibu, Tes Hb 1 = xhb1 ibu, Tes Hb Follow-up = xhbf ibu, Tes Hb 2 = xhb2 ibu, Fe 1 = xfe1 ibu, Fe 2 = xfe2 ibu, dan Fe 3 = xfe3 ibu.";
-    private $PNC_KN_MESSAGE_DUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah pasien ibu yang jadwal pemeriksaan nifas dan neonatal-nya telah tiba:  KF 1 dan KN 1 = xkf1 ibu dan xkn1 bayi, KF 2 dan KN 2= xkf2 ibu dan xkn2 bayi, KF 3 dan KN 3 = xkf3 ibu dan xkn3 bayi, serta KF 4 = xkf4 ibu.";
-    private $PNC_KN_MESSAGE_OVERDUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah pasien ibu yang jadwal pemeriksaan nifas dan neonatal-nya telah lewat waktu tapi masih bisa menerima pelayanan:  KF 1 dan KN 1 = xkf1 ibu dan xkn1 bayi, KF 2 dan KN 2= xkf2 ibu dan xkn2 bayi, KF 3 dan KN 3 = xkf3 ibu dan xkn3 bayi, serta KF 4 = xkf4 ibu.";
-    private $CHILD_IMMU_MESSAGE_DUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah pasien ibu yang jadwal imunisasinya telah tiba:  Hb 0 = xhb0 bayi, BCG dan Polio 1 = xbp1 bayi, DPT/HB 1 dan Polio 2 = xdp2 bayi, DPT/HB 2 dan Polio 3 = xdp3 bayi, DPT/HB 3 dan Polio 4 = xdp4 bayi serta Campak = xcam bayi.";
+    private $MESSAGE_DUE = [
+      "anc2" => "Kehamilan ibu akan memasuki usia 4 bulan. Sudah saatnya memeriksakan kehamilan ibu lagi ke bidan. Segera kunjungi posyandu, polindes atau puskesmas terdekat",
+      "anc3" => "Kehamilan ibu akan memasuki usia 7 bulan. Sudah saatnya memeriksakan kehamilan ibu lagi ke bidan. Segera kunjungi posyandu, polindes atau puskesmas terdekat",
+      "anc4" => "Kehamilan ibu akan memasuki usia 9 bulan. Sudah saatnya memeriksakan kehamilan ibu lagi ke bidan. Segera kunjungi posyandu, polindes atau puskesmas terdekat",
+      "kf1" => "Hari ke-3 setelah ibu melahirkan. Waktunya ibu dan bayi melakukan pemeriksaan paska salin. Hubungi bidan desa atau kunjungi posyandu, polindes atau pukesmas",
+      "kf2" => "Hari ke-7 setelah ibu melahirkan. Waktunya ibu dan bayi melakukan pemeriksaan paska salin. Hubungi bidan desa atau kunjungi posyandu, polindes atau pukesmas",
+      "kf3" => "Ini adalah hari ke-29 setelah ibu melahirkan. Tiba waktunya melakukan pemeriksaan paska salin. Hubungi bidan desa atau kunjungi posyandu, polindes atau pukesmas"
+    ];
+
+    private $MESSAGE_OVERDUE = [
+      "anc2" => "Jadwal kunjungan ibu lewat 1 bulan. Segera kunjungi posyandu, polindes, puskesmas. Saat usia kandungan 4-6 bulan, ibu hamil wajib memeriksakan 1 kali",
+      "anc3" => "Jadwal kunjungan ibu lewat sebulan. Segera kunjungi posyandu, polindes, puskesmas. Saat usia kandungan 7-9 bulan, ibu hamil wajib memeriksakan diri 2 kali",
+      "anc4" => "Waktu persalinan ibu semakin dekat. Segera periksa kehamilan ibu di posyandu, polindes atau puskesmas agar bisa lebih cepat mengetahui adanya masalah persalinan",
+      "kf1" => "",
+      "kf2" => "",
+      "kf3" => ""
+    ];
+
     private $CHILD_IMMU_MESSAGE_OVERDUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah pasien ibu yang jadwal imunisasinya telah lewat waktu tapi masih bisa menerima pelayanan:  Hb 0 = xhb0 bayi, BCG dan Polio 1 = xbp1 bayi, DPT/HB 1 dan Polio 2 = xdp2 bayi, DPT/HB 2 dan Polio 3 = xdp3 bayi, DPT/HB 3 dan Polio 4 = xdp4 bayi serta Campak = xcam bayi.";
     private $FP_MESSAGE_DUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah pasien KB yang jadwal perpanjangan masa alat kontrasepsinya telah tiba: Suntik KB 3 bulan = xsk3 ibu, Suntik KB 1 bulan = xsk1 ibu, KB IUD = xiud ibu dan KB Implan = ximp ibu.";
     private $FP_MESSAGE_OVERDUE = "Selamat pagi, Bu xxnama. Berikut adalah jumlah pasien KB yang jadwal perpanjangan masa alat kontrasepsinya telah lewat waktu tapi masih bisa menerima pelayanan: Suntik KB 3 bulan = xsk3 ibu, Suntik KB 1 bulan = xsk1 ibu, KB IUD = xiud ibu dan KB Implan = ximp ibu.";
@@ -249,7 +259,7 @@ class ServiceAlert extends CI_Model{
             }
         }
         
-        $query  = $analyticsDB->query("SELECT kartu_anc_visit.userID,kartu_anc_visit.motherId,kartu_anc_visit.ancDate,kartu_anc_visit.tanggalHPHT,kartu_anc_visit.ancKe,kartu_ibu_registration.dusun,kartu_ibu_registration.namalengkap FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
+        $query  = $analyticsDB->query("SELECT kartu_anc_visit.userID,kartu_anc_visit.motherId,kartu_anc_visit.ancDate,kartu_anc_visit.tanggalHPHT,kartu_anc_visit.ancKe,kartu_ibu_registration.dusun,kartu_ibu_registration.namalengkap,kartu_ibu_registration.NomorTelponHp FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
         $query2 = $analyticsDB->query("SELECT motherId FROM kartu_pnc_dokumentasi_persalinan")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -272,6 +282,7 @@ class ServiceAlert extends CI_Model{
                 $new_anc = strtotime($ibuhamil->ancDate);
                 if($new_anc > $old_anc){
                     $result[$ibuhamil->motherId]["userid"] = $ibuhamil->userID;
+                    $result[$ibuhamil->motherId]["tlp"] = $ibuhamil->NomorTelponHp;
                     $result[$ibuhamil->motherId]["anc_date"] = $ibuhamil->ancDate;
                     $result[$ibuhamil->motherId]["anc_ke"]  = $ibuhamil->ancKe;
                     $result[$ibuhamil->motherId]["nama"]  = $ibuhamil->namalengkap;
@@ -283,6 +294,7 @@ class ServiceAlert extends CI_Model{
                 }
             }else{
                 $result[$ibuhamil->motherId]["userid"]  = $ibuhamil->userID;
+                $result[$ibuhamil->motherId]["tlp"] = $ibuhamil->NomorTelponHp;
                 $result[$ibuhamil->motherId]["anc_date"]  = $ibuhamil->ancDate;
                 $result[$ibuhamil->motherId]["anc_ke"]  = $ibuhamil->ancKe;
                 $result[$ibuhamil->motherId]["nama"]  = $ibuhamil->namalengkap;
@@ -298,20 +310,22 @@ class ServiceAlert extends CI_Model{
                 if(array_key_exists($all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']], $final_result[$res['userid']])){
                     if($res["anc_ke"]==1){
                         if($res["ga"]>12&&$res["ga"]<=18){
-                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc2"],$res['nama']);
+                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc2"],$res);
                         }
                     }elseif($res["anc_ke"]==2){
                         if($res["ga"]>28&&$res["ga"]<=32){
-                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc3"],$res['nama']);
+                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc3"],$res);
                         }
                     }elseif($res["anc_ke"]==3){
                         if($res["ga"]>32&&$res["ga"]<=36){
-                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc4"],$res['nama']);
+                            array_push($final_result[$res['userid']][$all_dusun[$this->loc->getIntLocId('bidan')[$res['userid']]][$res['dusun']]]["due"]["anc4"],$res);
                         }
                     }
                 }
             }
         }
+
+        $ibu_reminder = [];
         
         foreach ($final_result as $user=>$final){
             var_dump($user);
@@ -323,20 +337,29 @@ class ServiceAlert extends CI_Model{
             foreach($final as $dusun=>$anc){
                 if(!(sizeof($anc['due']['anc2'])==0)){
                     $pesan_due2 .= $dusun."=";
-                    foreach ($anc['due']['anc2'] as $nama) {
-                      $pesan_due2 .= $nama.", ";
+                    foreach ($anc['due']['anc2'] as $res) {
+                      if($res['tlp']!='None'&&$res['tlp']!=''){
+                        $ibu_reminder['anc2'][$res['tlp']] = $res;
+                      }
+                      $pesan_due2 .= $res['nama'].", ";
                     }
                 }
                 if(!(sizeof($anc['due']['anc3'])==0)){
                     $pesan_due3 .= $dusun."=";
-                    foreach ($anc['due']['anc3'] as $nama) {
-                      $pesan_due3 .= $nama.", ";
+                    foreach ($anc['due']['anc3'] as $res) {
+                      if($res['tlp']!='None'&&$res['tlp']!=''){
+                        $ibu_reminder['anc3'][$res['tlp']] = $res;
+                      }
+                      $pesan_due3 .= $res['nama'].", ";
                     }
                 }
                 if(!(sizeof($anc['due']['anc4'])==0)){
                     $pesan_due4 .= $dusun."=";
-                    foreach ($anc['due']['anc4'] as $nama) {
-                      $pesan_due4 .= $nama.", ";
+                    foreach ($anc['due']['anc4'] as $res) {
+                      if($res['tlp']!='None'&&$res['tlp']!=''){
+                        $ibu_reminder['anc4'][$res['tlp']] = $res;
+                      }
+                      $pesan_due4 .= $res['nama'].", ";
                     }
                 }
             }
@@ -363,6 +386,14 @@ class ServiceAlert extends CI_Model{
                 var_dump($status);
             }
         }
+        foreach ($ibu_reminder as $anc => $ibus) {
+          foreach ($ibus as $no => $ibu) {
+            $pesan = $this->MESSAGE_DUE[$anc];
+            $penerima = $this->intNumber($no);
+            $status = $this->send_message($pesan,$penerima);
+            var_dump($status);
+          }
+        }
     }
     
     public function alertAncOverDue(){
@@ -381,7 +412,7 @@ class ServiceAlert extends CI_Model{
             }
         }
         
-        $query  = $analyticsDB->query("SELECT kartu_anc_visit.*,kartu_ibu_registration.dusun,kartu_ibu_registration.namalengkap FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
+        $query  = $analyticsDB->query("SELECT kartu_anc_visit.*,kartu_ibu_registration.dusun,kartu_ibu_registration.namalengkap,kartu_ibu_registration.NomorTelponHp FROM kartu_anc_visit LEFT JOIN kartu_ibu_registration ON kartu_anc_visit.kiId=kartu_ibu_registration.kiId WHERE tanggalHPHT > '$batas'");
         $query2 = $analyticsDB->query("SELECT motherId FROM kartu_pnc_dokumentasi_persalinan")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -404,6 +435,7 @@ class ServiceAlert extends CI_Model{
                 $new_anc = strtotime($ibuhamil->ancDate);
                 if($new_anc > $old_anc){
                     $result[$ibuhamil->motherId]["userid"] = $ibuhamil->userID;
+                    $result[$ibuhamil->motherId]["tlp"] = $ibuhamil->NomorTelponHp;
                     $result[$ibuhamil->motherId]["anc_date"] = $ibuhamil->ancDate;
                     $result[$ibuhamil->motherId]["anc_ke"]  = $ibuhamil->ancKe;
                     $result[$ibuhamil->motherId]["nama"]  = $ibuhamil->namalengkap;
@@ -415,6 +447,7 @@ class ServiceAlert extends CI_Model{
                 }
             }else{
                 $result[$ibuhamil->motherId]["userid"]  = $ibuhamil->userID;
+                $result[$ibuhamil->motherId]["tlp"] = $ibuhamil->NomorTelponHp;
                 $result[$ibuhamil->motherId]["anc_date"]  = $ibuhamil->ancDate;
                 $result[$ibuhamil->motherId]["anc_ke"]  = $ibuhamil->ancKe;
                 $result[$ibuhamil->motherId]["nama"]  = $ibuhamil->namalengkap;
@@ -444,6 +477,8 @@ class ServiceAlert extends CI_Model{
                 }
             }
         }
+
+        $ibu_reminder = [];
         
         foreach ($final_result as $user=>$final){
             var_dump($user);
@@ -455,6 +490,9 @@ class ServiceAlert extends CI_Model{
             foreach($final as $dusun=>$anc){
                 if(!(sizeof($anc['overdue']['anc2'])==0)){
                     foreach ($anc['overdue']['anc2'] as $idibu){
+                        if($result[$idibu]['tlp']!='None'&&$result[$idibu]['tlp']!=''){
+                          $ibu_reminder['anc2'][$result[$idibu]['tlp']] = $result[$idibu];
+                        }
                         if(strlen($pesan_overdue2)>350){
                             if(strlen($pesan_overdue2_2)>350){
                                 $pesan_overdue2_3 .= $result[$idibu]['nama'].", ";
@@ -467,6 +505,9 @@ class ServiceAlert extends CI_Model{
                 }
                 if(!(sizeof($anc['overdue']['anc3'])==0)){
                     foreach ($anc['overdue']['anc3'] as $idibu){
+                        if($result[$idibu]['tlp']!='None'&&$result[$idibu]['tlp']!=''){
+                          $ibu_reminder['anc3'][$result[$idibu]['tlp']] = $result[$idibu];
+                        }
                         if(strlen($pesan_overdue3)>350){
                             if(strlen($pesan_overdue3_2)>350){
                                 $pesan_overdue3_3 .= $result[$idibu]['nama'].", ";
@@ -478,6 +519,9 @@ class ServiceAlert extends CI_Model{
                 }
                 if(!(sizeof($anc['overdue']['anc4'])==0)){
                     foreach ($anc['overdue']['anc4'] as $idibu){
+                        if($result[$idibu]['tlp']!='None'&&$result[$idibu]['tlp']!=''){
+                          $ibu_reminder['anc4'][$result[$idibu]['tlp']] = $result[$idibu];
+                        }
                         if(strlen($pesan_overdue4)>350){
                             if(strlen($pesan_overdue4_2)>350){
                                 $pesan_overdue4_3 .= $result[$idibu]['nama'].", ";
@@ -555,6 +599,14 @@ class ServiceAlert extends CI_Model{
                 //var_dump($status);
             }
         }
+        foreach ($ibu_reminder as $anc => $ibus) {
+          foreach ($ibus as $no => $ibu) {
+            $pesan = $this->MESSAGE_OVERDUE[$anc];
+            $penerima = $this->intNumber($no);
+            $status = $this->send_message($pesan,$penerima);
+            var_dump($status);
+          }
+        }
     }
     
     public function alertPncDue(){
@@ -570,7 +622,7 @@ class ServiceAlert extends CI_Model{
             $final_result[$user] = $data;
         }
         //var_dump($query->result());
-        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.userID,kartu_pnc_dokumentasi_persalinan.motherId,kartu_pnc_dokumentasi_persalinan.childId,kartu_pnc_dokumentasi_persalinan.tanggalLahirAnak,kartu_ibu_registration.namalengkap FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
+        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.userID,kartu_pnc_dokumentasi_persalinan.motherId,kartu_pnc_dokumentasi_persalinan.childId,kartu_pnc_dokumentasi_persalinan.tanggalLahirAnak,kartu_ibu_registration.namalengkap,kartu_ibu_registration.NomorTelponHp FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
         $query2 = $analyticsDB->query("SELECT motherId,hariKeKF FROM kartu_pnc_visit ORDER BY referenceDate DESC")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -591,6 +643,7 @@ class ServiceAlert extends CI_Model{
         foreach ($query->result() as $ibunifas){
             $today = date_create($now);
             $result[$ibunifas->motherId]["nama"] = $ibunifas->namalengkap;
+            $result[$ibunifas->motherId]["tlp"] = $ibunifas->NomorTelponHp;
             $result[$ibunifas->motherId]["lastkf"] = 'None';
             $result[$ibunifas->motherId]["lastkn"] = 'None';
             $result[$ibunifas->motherId]["68"] = 'None';
@@ -626,6 +679,8 @@ class ServiceAlert extends CI_Model{
                 }
             }
         }
+
+        $ibu_reminder = [];
         
         foreach ($final_result as $desa=>$due){
             var_dump($desa);
@@ -638,6 +693,9 @@ class ServiceAlert extends CI_Model{
             foreach ($due['due'] as $kf=>$dataibu){
                 if(!(sizeof($due['due'][$kf])==0)){
                     foreach ($dataibu as $ibu){
+                        if($ibu['tlp']!='None'&&$ibu['tlp']!=''){
+                          $ibu_reminder[$kf][$ibu['tlp']] = $ibu;
+                        }
                         if($ibu==end($dataibu)){
                             $pesan[$kf] .= $ibu['nama'];
                         }else{
@@ -649,6 +707,14 @@ class ServiceAlert extends CI_Model{
                     var_dump($status);
                 }
             }
+        }
+        foreach ($ibu_reminder as $pnc => $ibus) {
+          foreach ($ibus as $no => $ibu) {
+            $pesan = $this->MESSAGE_DUE[$pnc];
+            $penerima = $this->intNumber($no);
+            $status = $this->send_message($pesan,$penerima);
+            var_dump($status);
+          }
         }
     }
     
@@ -665,7 +731,7 @@ class ServiceAlert extends CI_Model{
             $final_result[$user] = $data;
         }
         //var_dump($query->result());
-        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.userID,kartu_pnc_dokumentasi_persalinan.motherId,kartu_pnc_dokumentasi_persalinan.childId,kartu_pnc_dokumentasi_persalinan.tanggalLahirAnak,kartu_ibu_registration.namalengkap FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
+        $query  = $analyticsDB->query("SELECT kartu_pnc_dokumentasi_persalinan.userID,kartu_pnc_dokumentasi_persalinan.motherId,kartu_pnc_dokumentasi_persalinan.childId,kartu_pnc_dokumentasi_persalinan.tanggalLahirAnak,kartu_ibu_registration.namalengkap,kartu_ibu_registration.NomorTelponHp FROM kartu_pnc_dokumentasi_persalinan LEFT JOIN kartu_anc_registration INNER JOIN kartu_ibu_registration ON kartu_ibu_registration.kiId=kartu_anc_registration.kiId ON kartu_pnc_dokumentasi_persalinan.motherId=kartu_anc_registration.motherId WHERE tanggalLahirAnak > '$batas' GROUP BY kartu_pnc_dokumentasi_persalinan.motherId");
         $query2 = $analyticsDB->query("SELECT motherId,hariKeKF FROM kartu_pnc_visit ORDER BY referenceDate DESC")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -686,6 +752,7 @@ class ServiceAlert extends CI_Model{
         foreach ($query->result() as $ibunifas){
             $today = date_create($now);
             $result[$ibunifas->motherId]["nama"] = $ibunifas->namalengkap;
+            $result[$ibunifas->motherId]["tlp"] = $ibunifas->NomorTelponHp;
             $result[$ibunifas->motherId]["lastkf"] = 'None';
             $result[$ibunifas->motherId]["lastkn"] = 'None';
             $result[$ibunifas->motherId]["68"] = 'None';
@@ -733,6 +800,9 @@ class ServiceAlert extends CI_Model{
             foreach ($due['due'] as $kf=>$dataibu){
                 if(!(sizeof($due['due'][$kf])==0)){
                     foreach ($dataibu as $ibu){
+                        if($ibu['tlp']!='None'&&$ibu['tlp']!=''){
+                          $ibu_reminder[$kf][$ibu['tlp']] = $ibu;
+                        }
                         if($ibu==end($dataibu)){
                             $pesan[$kf] .= $ibu['nama'];
                         }else{
