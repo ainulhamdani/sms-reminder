@@ -165,7 +165,7 @@ class EcServiceAlert extends CI_Model{
             }
         }
         
-        $query  = $analyticsDB->query("SELECT event_bidan_kunjungan_anc.baseEntityId,event_bidan_kunjungan_anc.locationId,event_bidan_kunjungan_anc.ancDate,event_bidan_kunjungan_anc.usiaKlinis,event_bidan_tambah_anc.tanggalHPHT,client_ibu.dusun,client_ibu.namaLengkap,event_bidan_identitas_ibu.NomorTelponHp FROM event_bidan_kunjungan_anc LEFT JOIN event_bidan_tambah_anc ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_tambah_anc.baseEntityId LEFT JOIN client_ibu ON event_bidan_kunjungan_anc.baseEntityId=client_ibu.baseEntityId LEFT JOIN event_bidan_identitas_ibu ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_identitas_ibu.baseEntityId WHERE event_bidan_kunjungan_anc.baseEntityId IN (SELECT baseEntityId FROM `event_bidan_tambah_anc` WHERE tanggalHPHT > '$batas') GROUP BY event_bidan_kunjungan_anc.baseEntityId");
+        $query  = $analyticsDB->query("SELECT event_bidan_kunjungan_anc.baseEntityId,event_bidan_kunjungan_anc.locationId,event_bidan_kunjungan_anc.ancDate,event_bidan_kunjungan_anc.usiaKlinis,event_bidan_tambah_anc.tanggalHPHT,client_ibu.dusun,client_ibu.namaLengkap,event_bidan_identitas_ibu.NomorTelponHp FROM event_bidan_kunjungan_anc LEFT JOIN event_bidan_tambah_anc ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_tambah_anc.baseEntityId LEFT JOIN client_ibu ON event_bidan_kunjungan_anc.baseEntityId=client_ibu.baseEntityId LEFT JOIN event_bidan_identitas_ibu ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_identitas_ibu.baseEntityId WHERE event_bidan_kunjungan_anc.baseEntityId IN (SELECT baseEntityId FROM `event_bidan_tambah_anc` WHERE tanggalHPHT > '$batas') ORDER BY event_bidan_kunjungan_anc.ancDate ASC");
         $query2 = $analyticsDB->query("SELECT baseEntityId FROM event_bidan_dokumentasi_persalinan")->result();
         $datapnc = [];
         foreach ($query2 as $q){
@@ -194,8 +194,8 @@ class EcServiceAlert extends CI_Model{
                     $result[$ibuhamil->baseEntityId]["nama"]  = $ibuhamil->namaLengkap;
                     $result[$ibuhamil->baseEntityId]["dusun"]  = str_replace('.','',trim($ibuhamil->dusun));
                     $result[$ibuhamil->baseEntityId]["ga"] = (int)$ibuhamil->usiaKlinis;
-                    $result[$ibuhamil->baseEntityId]["anc_ke"]  = $this->ancKe($result[$ibuhamil->baseEntityId],$dataanc[$ibuhamil->baseEntityId]);
                     array_push($dataanc[$ibuhamil->baseEntityId],$result[$ibuhamil->baseEntityId]);
+                    $result[$ibuhamil->baseEntityId]["anc_ke"]  = $this->ancKe($result[$ibuhamil->baseEntityId],$dataanc[$ibuhamil->baseEntityId]);
                 }
             }else{
                 $result[$ibuhamil->baseEntityId]["locationid"]  = str_replace('.','',trim($ibuhamil->locationId));
@@ -205,8 +205,8 @@ class EcServiceAlert extends CI_Model{
                 $result[$ibuhamil->baseEntityId]["dusun"]  = str_replace('.','',trim($ibuhamil->dusun));
                 $result[$ibuhamil->baseEntityId]["ga"] = (int)$ibuhamil->usiaKlinis;
                 $dataanc[$ibuhamil->baseEntityId] = [];
-                $result[$ibuhamil->baseEntityId]["anc_ke"]  = $this->ancKe($result[$ibuhamil->baseEntityId],$dataanc[$ibuhamil->baseEntityId]);
                 array_push($dataanc[$ibuhamil->baseEntityId],$result[$ibuhamil->baseEntityId]);
+                $result[$ibuhamil->baseEntityId]["anc_ke"]  = $this->ancKe($result[$ibuhamil->baseEntityId],$dataanc[$ibuhamil->baseEntityId]);
             }
         }
 //        foreach ($dataanc as $be=>$dt){
@@ -329,7 +329,7 @@ class EcServiceAlert extends CI_Model{
             }
         }
         
-        $query  = $analyticsDB->query("SELECT event_bidan_kunjungan_anc.baseEntityId,event_bidan_kunjungan_anc.locationId,event_bidan_kunjungan_anc.ancDate,event_bidan_kunjungan_anc.usiaKlinis,event_bidan_tambah_anc.tanggalHPHT,client_ibu.dusun,client_ibu.namaLengkap,event_bidan_identitas_ibu.NomorTelponHp FROM event_bidan_kunjungan_anc LEFT JOIN event_bidan_tambah_anc ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_tambah_anc.baseEntityId LEFT JOIN client_ibu ON event_bidan_kunjungan_anc.baseEntityId=client_ibu.baseEntityId LEFT JOIN event_bidan_identitas_ibu ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_identitas_ibu.baseEntityId WHERE event_bidan_kunjungan_anc.baseEntityId IN (SELECT baseEntityId FROM `event_bidan_tambah_anc` WHERE tanggalHPHT > '$batas') GROUP BY event_bidan_kunjungan_anc.baseEntityId");
+        $query  = $analyticsDB->query("SELECT event_bidan_kunjungan_anc.baseEntityId,event_bidan_kunjungan_anc.locationId,event_bidan_kunjungan_anc.ancDate,event_bidan_kunjungan_anc.usiaKlinis,event_bidan_tambah_anc.tanggalHPHT,client_ibu.dusun,client_ibu.namaLengkap,event_bidan_identitas_ibu.NomorTelponHp FROM event_bidan_kunjungan_anc LEFT JOIN event_bidan_tambah_anc ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_tambah_anc.baseEntityId LEFT JOIN client_ibu ON event_bidan_kunjungan_anc.baseEntityId=client_ibu.baseEntityId LEFT JOIN event_bidan_identitas_ibu ON event_bidan_kunjungan_anc.baseEntityId=event_bidan_identitas_ibu.baseEntityId WHERE event_bidan_kunjungan_anc.baseEntityId IN (SELECT baseEntityId FROM `event_bidan_tambah_anc` WHERE tanggalHPHT > '$batas')  ORDER BY event_bidan_kunjungan_anc.ancDate ASC");
         $query2 = $analyticsDB->query("SELECT baseEntityId FROM event_bidan_dokumentasi_persalinan")->result();
         $datapnc = [];
         foreach ($query2 as $q){
