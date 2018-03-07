@@ -12,6 +12,7 @@ class SubmissionReminder extends CI_Model{
 	function __construct() {
         parent::__construct();
         $this->load->model('Rapidpro');
+        $this->load->model('SmsContent');
     }
 
     private function send_message($msg,$to){
@@ -36,14 +37,14 @@ class SubmissionReminder extends CI_Model{
     		$count = $data[$locId];
     		if($count == 0){
                 if($type=="reminder"){
-                    $pesan = "Selamat sore bapak/ibu. SMS ini merupakan SMS dari sistem. SMS ini sebagai pengingat bapak/ibu untuk mengentry data  dari pelayanan hari ini. Bila bapak/ibu sudah melakukan pengentryan, mohon mensinkronkan aplikasi. Terimakasih.";
+                    $pesan = $this->SmsContent->getREMINDER_MESSAGE($fhw);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$name]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
                     var_dump($status);
                 }
     		}else{
                 if($type=="thank"){
-                    $pesan = "Selamat pagi bapak/ibu. Terima kasih telah mengentry data Anda. Berikut adalah rekap dari hasil data entry entry Anda kemarin: on-time submission xxx %";
+                    $pesan = $this->SmsContent->getTHANKS_MESSAGE($fhw);
                     $pesan = str_replace('xxx', $ontime['daily'][$name], $pesan);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$name]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
@@ -67,14 +68,14 @@ class SubmissionReminder extends CI_Model{
     		$count = $data[$locId];
     		if($count == 0){
                 if($type=="reminder"){
-                    $pesan = "Selamat sore bapak/ibu. SMS ini merupakan SMS dari sistem. SMS ini sebagai pengingat bapak/ibu untuk mengentry data  dari pelayanan hari ini. Bila bapak/ibu sudah melakukan pengentryan, mohon mensinkronkan aplikasi. Terimakasih.";
+                    $pesan = $this->SmsContent->getREMINDER_MESSAGE($fhw);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$locId]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
                     var_dump($status);
                 }
     		}else{
                 if($type=="thank"){
-                    $pesan = "Selamat pagi bapak/ibu. Terima kasih telah mengentry data Anda. Berikut adalah rekap dari hasil data entry entry Anda kemarin: on-time submission xxx %";
+                    $pesan = $this->SmsContent->getTHANKS_MESSAGE($fhw);
                     $pesan = str_replace('xxx', $ontime['daily'][$name], $pesan);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$locId]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
