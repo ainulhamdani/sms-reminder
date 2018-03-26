@@ -34,17 +34,18 @@ class SubmissionReminder extends CI_Model{
         $this->load->model('EcOnTimeSubmissionModel');
         $ontime = $this->EcOnTimeSubmissionModel->getOnTimeFormByDate([$yesterday,$yesterday],$fhw);
     	foreach ($loc as $locId => $name) {
+            $kec = $this->LocationEcModel->getKecFromDesa($this->cleanLocName($locId));
     		$count = $data[$locId];
     		if($count == 0){
                 if($type=="reminder"){
-                    $pesan = $this->SmsContent->getREMINDER_MESSAGE($fhw);
+                    $pesan = $this->SmsContent->getREMINDER_MESSAGE($fhw,$kec);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$name]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
                     var_dump($status);
                 }
     		}else{
                 if($type=="thank"){
-                    $pesan = $this->SmsContent->getTHANKS_MESSAGE($fhw);
+                    $pesan = $this->SmsContent->getTHANKS_MESSAGE($fhw,$kec);
                     $pesan = str_replace('xxx', $ontime['daily'][$name], $pesan);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$name]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
@@ -65,17 +66,18 @@ class SubmissionReminder extends CI_Model{
         $this->load->model('OnTimeSubmissionModel');
         $ontime = $this->OnTimeSubmissionModel->getOnTimeFormByDate([$yesterday,$yesterday],$fhw);
     	foreach ($loc as $locId => $name) {
+            $kec = $this->LocationModel->getKecFromUser($fhw,$this->cleanLocName($locId));
     		$count = $data[$locId];
     		if($count == 0){
                 if($type=="reminder"){
-                    $pesan = $this->SmsContent->getREMINDER_MESSAGE($fhw);
+                    $pesan = $this->SmsContent->getREMINDER_MESSAGE($fhw,$kec);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$locId]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
                     var_dump($status);
                 }
     		}else{
                 if($type=="thank"){
-                    $pesan = $this->SmsContent->getTHANKS_MESSAGE($fhw);
+                    $pesan = $this->SmsContent->getTHANKS_MESSAGE($fhw,$kec);
                     $pesan = str_replace('xxx', $ontime['daily'][$name], $pesan);
                     $penerima = $this->fhw_number[$cd.'_'.$fhw][$locId]['tel'];
                     $status = $this->send_message($pesan,[$penerima]);
@@ -83,6 +85,12 @@ class SubmissionReminder extends CI_Model{
                 }
             }
     	}
+    }
+
+
+
+    private function cleanLocName($str){
+        return str_replace(".", "", $str);
     }
     
 }
